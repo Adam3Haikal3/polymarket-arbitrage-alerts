@@ -1,0 +1,161 @@
+17:25:45 [INFO] demo: ======================================================================
+17:25:45 [INFO] demo:   POLYMARKET DEPENDENT MARKET DETECTOR — MVP DEMO
+17:25:45 [INFO] demo: ======================================================================
+17:25:45 [INFO] demo: 
+📦 Creating synthetic markets...
+17:25:45 [INFO] demo:   Created 9 synthetic markets:
+17:25:45 [INFO] demo:     [Politics] Will a Democrat win Georgia Presidential Election?... (3 conditions)
+17:25:45 [INFO] demo:     [Politics] Will the Democratic candidate win Georgia by 0%-1.0%?... (4 conditions)
+17:25:45 [INFO] demo:     [Politics] Who will win the 2024 Presidential Election?... (3 conditions)
+17:25:45 [INFO] demo:     [Politics] 2024 Balance of Power: R Prez R Senate R House... (4 conditions)
+17:25:45 [INFO] demo:     [Sports] Will the Boston Celtics defeat the Los Angeles Lakers?... (1 conditions)
+17:25:45 [INFO] demo:     [Sports] Will the Boston Celtics win by 10 or more points against the... (1 conditions)
+17:25:45 [INFO] demo:     [Politics] Will a Democrat win North Carolina Presidential Election?... (2 conditions)
+17:25:45 [INFO] demo:     [Crypto] Will Bitcoin reach $100,000 in 2024?... (1 conditions)
+17:25:45 [INFO] demo:     [Politics] Will a Republican win Georgia US Senate Election?... (1 conditions)
+17:25:45 [INFO] demo: 
+──────────────────────────────────────────────────
+17:25:45 [INFO] demo: 🔍 TIER 1: Candidate Generation (Structural Filtering)
+17:25:45 [INFO] demo: ──────────────────────────────────────────────────
+17:25:45 [INFO] src.candidate_generator: Generating candidates from 9 markets
+17:25:45 [INFO] src.candidate_generator: After topic+date grouping: 2 groups, 16 potential pairs
+17:25:45 [INFO] src.candidate_generator: Extracting entities for all markets...
+17:25:45 [INFO] src.candidate_generator: Generated 5 candidate pairs (reduced from 16)
+17:25:45 [INFO] demo: 
+  Candidates found: 5
+17:25:45 [INFO] demo:   Score 0.767: 'Will a Democrat win Georgia Presidential...' × 'Will the Democratic candidate win Georgi...'
+17:25:45 [INFO] demo:   Score 0.552: 'Will the Democratic candidate win Georgi...' × 'Will a Republican win Georgia US Senate ...'
+17:25:45 [INFO] demo:   Score 0.359: 'Will a Democrat win Georgia Presidential...' × 'Will a Democrat win North Carolina Presi...'
+17:25:45 [INFO] demo:   Score 0.288: 'Will the Democratic candidate win Georgi...' × 'Will a Democrat win North Carolina Presi...'
+17:25:45 [INFO] demo:   Score 0.209: 'Will a Democrat win Georgia Presidential...' × 'Who will win the 2024 Presidential Elect...'
+17:25:45 [INFO] demo: 
+──────────────────────────────────────────────────
+17:25:45 [INFO] demo: 🤖 TIER 2: ML Classification
+17:25:45 [INFO] demo: ──────────────────────────────────────────────────
+17:25:45 [INFO] demo:   Training classifier on synthetic labeled data...
+17:25:45 [INFO] src.classifier: Training on 1000 pairs (200 positive, 800 negative)
+17:25:50 [INFO] src.classifier: CV AUC: 1.000 ± 0.000
+17:25:56 [INFO] src.classifier: Top 10 features:
+17:25:56 [INFO] src.classifier:   entity_jaccard: 0.5570
+17:25:56 [INFO] src.classifier:   price_abs_pearson_corr: 0.1898
+17:25:56 [INFO] src.classifier:   embedding_cosine_sim: 0.1874
+17:25:56 [INFO] src.classifier:   price_cointegration_pvalue: 0.0316
+17:25:56 [INFO] src.classifier:   price_granger_pvalue: 0.0220
+17:25:56 [INFO] src.classifier:   volume_correlation: 0.0048
+17:25:56 [INFO] src.classifier:   condition_count_ratio: 0.0019
+17:25:56 [INFO] src.classifier:   shared_person_count: 0.0011
+17:25:56 [INFO] src.classifier:   price_pearson_corr: 0.0010
+17:25:56 [INFO] src.classifier:   question_token_jaccard: 0.0009
+17:25:56 [INFO] demo:   CV AUC: 1.000 ± 0.000
+/Users/emmotaustin/Downloads/files/polymarket-arbitrage-detector/src/classifier.py:265: RuntimeWarning: All-NaN slice encountered
+  col_medians = np.nanmedian(X, axis=0)
+17:25:56 [INFO] demo: 
+  ML Dependency Scores:
+17:25:56 [INFO] demo:   ✅ 1.000: 'Will a Democrat win Georgia Preside...' × 'Will the Democratic candidate win G...'
+17:25:56 [INFO] demo:      0.002: 'Will a Democrat win Georgia Preside...' × 'Will a Democrat win North Carolina ...'
+17:25:56 [INFO] demo:      0.002: 'Will a Democrat win Georgia Preside...' × 'Who will win the 2024 Presidential ...'
+17:25:56 [INFO] demo:      0.001: 'Will the Democratic candidate win G...' × 'Will a Democrat win North Carolina ...'
+17:25:56 [INFO] demo:      0.000: 'Will the Democratic candidate win G...' × 'Will a Republican win Georgia US Se...'
+17:25:56 [INFO] demo: 
+  Top 10 Feature Importances:
+17:25:56 [INFO] demo:     entity_jaccard                      0.5570
+17:25:56 [INFO] demo:     price_abs_pearson_corr              0.1898
+17:25:56 [INFO] demo:     embedding_cosine_sim                0.1874
+17:25:56 [INFO] demo:     price_cointegration_pvalue          0.0316
+17:25:56 [INFO] demo:     price_granger_pvalue                0.0220
+17:25:56 [INFO] demo:     volume_correlation                  0.0048
+17:25:56 [INFO] demo:     condition_count_ratio               0.0019
+17:25:56 [INFO] demo:     shared_person_count                 0.0011
+17:25:56 [INFO] demo:     price_pearson_corr                  0.0010
+17:25:56 [INFO] demo:     question_token_jaccard              0.0009
+17:25:56 [INFO] demo: 
+──────────────────────────────────────────────────
+17:25:56 [INFO] demo: 💰 ARBITRAGE DETECTION EXAMPLE
+17:25:56 [INFO] demo: ──────────────────────────────────────────────────
+17:25:56 [INFO] demo: 
+  Market: Will a Democrat win Georgia Presidential Election?
+17:25:56 [INFO] demo:   YES prices: ['0.45', '0.48', '0.02']
+17:25:56 [INFO] demo:   Sum: 0.9500
+17:25:56 [INFO] demo:   Rebalancing Arbitrage: {'has_opportunity': True, 'type': 'long', 'profit_per_dollar': 0.050000000000000044, 'sum_yes': 0.95}
+17:25:56 [INFO] demo: 
+  Combinatorial Check: GA Democrat Winner vs. Margins
+17:25:56 [INFO] demo:   Market A (Winner = Dem): 0.4500
+17:25:56 [INFO] demo:   Market B (Margin = Dem): 0.4000 (from ['0.15', '0.12', '0.08', '0.05'])
+17:25:56 [INFO] demo:   Combinatorial Arbitrage: {'has_opportunity': True, 'profit_per_dollar': 0.04999999999999999, 'direction': 'buy_s2_sell_s1', 'sum_s1': 0.45, 'sum_s2': 0.4}
+17:25:56 [INFO] demo: 
+──────────────────────────────────────────────────
+17:25:56 [INFO] demo: 📊 PRICE CORRELATION ANALYSIS
+17:25:56 [INFO] demo: ──────────────────────────────────────────────────
+17:25:56 [INFO] demo: 
+  DEPENDENT (same state, winner vs margin)
+17:25:56 [INFO] demo:     Pearson:  0.588
+17:25:56 [INFO] demo:     Returns:  0.124
+17:25:56 [INFO] demo:     Granger:  0.0000
+17:25:56 [INFO] demo:     MI:       0.760
+17:25:56 [INFO] demo: 
+  DEPENDENT (prez in balance of power)
+17:25:56 [INFO] demo:     Pearson:  0.452
+17:25:56 [INFO] demo:     Returns:  0.079
+17:25:56 [INFO] demo:     Granger:  0.0000
+17:25:56 [INFO] demo:     MI:       0.885
+17:25:56 [INFO] demo: 
+  INDEPENDENT (different topics)
+17:25:56 [INFO] demo:     Pearson:  -0.754
+17:25:56 [INFO] demo:     Returns:  -0.024
+17:25:56 [INFO] demo:     Granger:  0.0712
+17:25:56 [INFO] demo:     MI:       1.552
+17:25:56 [INFO] demo: 
+  AMBIGUOUS (same state, different race)
+17:25:56 [INFO] demo:     Pearson:  0.333
+17:25:56 [INFO] demo:     Returns:  0.013
+17:25:56 [INFO] demo:     Granger:  0.0000
+17:25:56 [INFO] demo:     MI:       0.767
+/opt/anaconda3/lib/python3.12/site-packages/numpy/core/_methods.py:49: RuntimeWarning: invalid value encountered in reduce
+  return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+17:25:56 [INFO] demo: 
+  DEPENDENT (same game, winner vs margin)
+17:25:56 [INFO] demo:     Pearson:  0.833
+17:25:56 [INFO] demo:     Returns:  0.028
+17:25:56 [INFO] demo:     Granger:  0.0747
+17:25:56 [INFO] demo:     MI:       1.514
+17:25:56 [INFO] demo: 
+──────────────────────────────────────────────────
+17:25:56 [INFO] demo: 🏷️  ENTITY EXTRACTION DEMO
+17:25:56 [INFO] demo: ──────────────────────────────────────────────────
+17:25:56 [INFO] demo: 
+  Q: Will the Democratic candidate win Georgia by 2.0%-3.0%?
+17:25:56 [INFO] demo:     Locations: ['Georgia']
+17:25:56 [INFO] demo:     Orgs: ['Democratic']
+17:25:56 [INFO] demo:     Event: election_margin/
+17:25:56 [INFO] demo:     Direction: win
+17:25:56 [INFO] demo:     Threshold: [2.0, 3.0] 
+17:25:56 [INFO] demo: 
+  Q: Will Donald Trump win the 2024 Presidential Election?
+17:25:56 [INFO] demo:     Persons: ['Donald Trump']
+17:25:56 [INFO] demo:     Event: election_winner/presidential
+17:25:56 [INFO] demo:     Direction: win
+17:25:56 [INFO] demo: 
+  Q: Will the Boston Celtics win by 10 or more points against the Lakers?
+17:25:56 [INFO] demo:     Event: yes_no_binary/
+17:25:56 [INFO] demo:     Direction: win
+17:25:56 [INFO] demo:     Threshold: [10.0, None] points
+17:25:56 [INFO] demo: 
+  Q: 2024 Balance of Power: R Prez R Senate R House
+17:25:56 [INFO] demo:     Event: balance_of_power/senate
+17:25:56 [INFO] demo:     Direction: 
+17:25:56 [INFO] demo: 
+  Q: Will Bitcoin reach $100,000 in 2024?
+17:25:56 [INFO] demo:     Event: price_target/
+17:25:56 [INFO] demo:     Direction: 
+17:25:56 [INFO] demo: 
+======================================================================
+17:25:56 [INFO] demo:   DEMO COMPLETE
+17:25:56 [INFO] demo: ======================================================================
+17:25:56 [INFO] demo: 
+Next steps for production:
+17:25:56 [INFO] demo:   1. Connect to Polymarket API (set API key in config/settings.py)
+17:25:56 [INFO] demo:   2. Fetch real markets: collector.fetch_all_markets()
+17:25:56 [INFO] demo:   3. Collect on-chain price history for correlation features
+17:25:56 [INFO] demo:   4. Run pipeline.run(markets, train_classifier=True)
+17:25:56 [INFO] demo:   5. Label uncertain pairs (active learning) to improve classifier
+17:25:56 [INFO] demo:   6. Start monitoring: pipeline.start_monitor(verified_pairs)

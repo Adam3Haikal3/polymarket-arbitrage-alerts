@@ -1,0 +1,23 @@
+# Core
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+requests>=2.31.0
+
+# Optional: Better NER
+# spacy>=3.7.0
+# en_core_web_sm  # python -m spacy download en_core_web_sm
+
+# Optional: Better embeddings
+# sentence-transformers>=2.2.0  # For Linq-Embed-Mistral or similar
+
+# Optional: XGBoost (faster, handles NaN natively)
+# xgboost>=2.0.0
+
+# Optional: On-chain data
+# web3>=6.0.0
+
+# Optional: LLM providers
+# openai>=1.0.0
+# anthropic>=0.20.0

@@ -76,6 +76,32 @@ def run():
             flag = "✅" if score >= 0.5 else "  "
             logger.info(f"  {flag} {score:.3f}: '{m1.question[:35]}...' × '{m2.question[:35]}...'")
 
+    # 3.5 LLM Verification (Tier 3)
+    logger.info("\n" + "─" * 50)
+    logger.info("🧠 TIER 3: LLM Verification")
+    logger.info("─" * 50)
+    
+    if scored_pairs:
+        top_pair = sorted(zip(scored_pairs, scores), key=lambda x: -x[1])[0]
+        m1, m2, ml_score = top_pair[0]
+        logger.info(f"  Sending top candidate to Gemini for logical verification:")
+        logger.info(f"  M1: {m1.question}")
+        logger.info(f"  M2: {m2.question}")
+        
+        from src.llm_verifier import LLMVerifier
+        # Initialize verifier with user's Gemini key
+        verifier = LLMVerifier(api_key="AIzaSyDsK1c-JO3sTBiYUV6LNROU2-3aJMFv1Rc")
+        
+        result = verifier.verify_pair(m1, m2)
+        
+        if result["is_dependent"]:
+            logger.info(f"\n  LLM Result: ✅ DEPENDENT")
+        else:
+            logger.info(f"\n  LLM Result: ❌ INDEPENDENT")
+            
+        logger.info(f"  Reasoning: {result['reasoning']}")
+        logger.info(f"  Combinations found: {result['n_combinations']} (Max possible: {result['max_combinations']})")
+
     # 4. Arbitrage Checks
     logger.info("\n" + "─" * 50)
     logger.info("💰 ARBITRAGE DETECTION ON REAL DATA")
@@ -106,8 +132,9 @@ def run():
         top_pair = sorted(zip(scored_pairs, scores), key=lambda x: -x[1])[0]
         m1, m2, _ = top_pair[0]
         
-        m1_prices = [c.price_yes for c in m1.conditions]
-        m2_prices = [c.price_yes for c in m2.conditions]
+        # We only want to look at the 'Yes' outcome prices (not the artificially added 'No' outcomes)
+        m1_prices = [c.price_yes for c in m1.conditions if getattr(c, 'outcome', 'Yes') == 'Yes']
+        m2_prices = [c.price_yes for c in m2.conditions if getattr(c, 'outcome', 'Yes') == 'Yes']
         
         # Simple heuristic for demo: compare the sum of prices between the two dependent markets
         comp_arb = check_combinatorial_arbitrage(m1_prices, m2_prices, threshold=0.03)

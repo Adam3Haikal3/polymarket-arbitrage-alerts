@@ -216,50 +216,28 @@ class LLMVerifier:
 
     def _call_llm(self, prompt: str) -> str:
         """
-        Call the LLM API.
-
-        This is a placeholder — plug in your preferred LLM provider:
-        - OpenAI: openai.ChatCompletion.create(...)
-        - Anthropic: anthropic.messages.create(...)
-        - Local: Use vLLM, Ollama, or similar for DeepSeek
-        - HuggingFace: transformers pipeline
+        Call the LLM API using Google Gemini.
         """
-        # PLACEHOLDER: Replace with actual API call
-        logger.info(f"[LLM CALL] Model: {self.model}, Prompt length: {len(prompt)}")
-
-        # For the MVP demo, return a mock response
-        # In production, uncomment and configure one of these:
-
-        # ── Option 1: OpenAI-compatible API ─────────
-        # import openai
-        # response = openai.ChatCompletion.create(
-        #     model="deepseek-chat",
-        #     messages=[{"role": "user", "content": prompt}],
-        #     temperature=settings.LLM_TEMPERATURE,
-        #     max_tokens=4096,
-        # )
-        # return response.choices[0].message.content
-
-        # ── Option 2: Anthropic ─────────────────────
-        # import anthropic
-        # client = anthropic.Anthropic(api_key=self.api_key)
-        # message = client.messages.create(
-        #     model="claude-sonnet-4-20250514",
-        #     max_tokens=4096,
-        #     messages=[{"role": "user", "content": prompt}],
-        # )
-        # return message.content[0].text
-
-        # ── Option 3: Local model via Ollama ────────
-        # import requests
-        # resp = requests.post("http://localhost:11434/api/generate", json={
-        #     "model": "deepseek-r1:32b",
-        #     "prompt": prompt,
-        #     "stream": False,
-        # })
-        # return resp.json()["response"]
-
-        return '{"valid_combinations": [], "dependent": false, "reasoning": "mock"}'
+        import os
+        from google import genai
+        
+        logger.info(f"[LLM CALL] Model: gemini-2.5-flash, Prompt length: {len(prompt)}")
+        
+        api_key = self.api_key or os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("Gemini API key is required.")
+            
+        client = genai.Client(api_key=api_key)
+        
+        try:
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+            )
+            return response.text
+        except Exception as e:
+            logger.error(f"Gemini API call failed: {e}")
+            return '{"valid_combinations": [], "dependent": false, "reasoning": "API Error"}'
 
     def _parse_response(self, raw: str, n: int, m: int) -> Optional[dict]:
         """Parse the LLM's JSON response."""

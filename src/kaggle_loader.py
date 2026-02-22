@@ -40,20 +40,31 @@ def load_kaggle_markets(csv_path: str, limit: int = 1000, topic_filter: str = No
             conditions = []
             
             # For simplicity in this POC, we treat each market row as a single Market object.
-            # If it's a binary question (Yes/No), we create one Condition.
+            # If it's a binary question (Yes/No), we create BOTH a "YES" and "NO" Condition 
+            # so the LLM verifier logic works correctly.
             if len(outcomes) == 2 and set(o.lower() for o in outcomes) == {'yes', 'no'}:
                 yes_idx = [i for i, o in enumerate(outcomes) if o.lower() == 'yes'][0]
                 no_idx = 1 - yes_idx
                 
                 conditions.append(Condition(
-                    condition_id=str(row['conditionId']),
-                    question=str(row['question']),
+                    condition_id=str(row['conditionId']) + "_yes",
+                    question=f"Yes, {row['question']}",
                     description=str(row['description']),
                     token_id_yes=f"t_yes_{row['id']}",
                     token_id_no=f"t_no_{row['id']}",
                     outcome="Yes",
                     price_yes=float(prices[yes_idx]),
                     price_no=float(prices[no_idx])
+                ))
+                conditions.append(Condition(
+                    condition_id=str(row['conditionId']) + "_no",
+                    question=f"No, {row['question']}",
+                    description=str(row['description']),
+                    token_id_yes=f"t_no_{row['id']}",
+                    token_id_no=f"t_yes_{row['id']}",
+                    outcome="No",
+                    price_yes=float(prices[no_idx]),
+                    price_no=float(prices[yes_idx])
                 ))
             else:
                 # Mutually exclusive outcomes (Categorical)
